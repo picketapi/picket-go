@@ -21,18 +21,6 @@ type PicketClient struct {
 	httpClient *http.Client
 }
 
-type PicketClientArgs struct {
-	// APIKey is your Picket project's api key.
-	// Typically this is your secret key for server-side environments
-	APIKey string
-	// BaseURL of the Picket api.
-	// Typically this is only used for testing
-	BaseURL string
-	// HTTPClient is the http client to use for requests.
-	// It is not required,
-	HTTPClient *http.Client
-}
-
 const (
 	APIHost = "picketapi.com"
 	// APIVersion is the version for the Picket API used by this client
@@ -43,22 +31,23 @@ const (
 )
 
 // NewClient creates a new PicketClient
-func NewClient(args PicketClientArgs) *PicketClient {
-	httpClient := &http.Client{}
-	if args.HTTPClient != nil {
-		httpClient = args.HTTPClient
-	}
-
-	baseURL := APIBaseURL
-	if args.BaseURL != "" {
-		baseURL = args.BaseURL
-	}
-
+func NewClient(apiKey string) *PicketClient {
 	return &PicketClient{
-		apiKey:     args.APIKey,
-		baseURL:    baseURL,
-		httpClient: httpClient,
+		apiKey:     apiKey,
+		baseURL:    APIBaseURL,
+		httpClient: &http.Client{},
 	}
+}
+
+// SetHTTPClient is the http client to use for requests.
+func (p *PicketClient) SetHTTPClient(client *http.Client) {
+	p.httpClient = client
+}
+
+// SetBaseURL sets the base URL of the Picket api.
+// Typically this is used for testing non-production deployments of the Picket API.
+func (p *PicketClient) SetBaseURL(baseURL string) {
+	p.baseURL = baseURL
 }
 
 // HTTPHeaders returns the default HTTP headers for the Picket client
@@ -139,6 +128,19 @@ func (p PicketClient) Auth(args AuthArgs) (AuthResponse, error) {
 func (p PicketClient) Authz(args AuthzArgs) (AuthResponse, error) {
 	resp, err := p.DoRequest("POST", "/authz", args)
 	var body AuthResponse
+
+	if err != nil {
+		return body, err
+	}
+
+	return decodeResponse(resp, body)
+}
+
+// Validate validates an access token, optionally, for the given requirements.
+// If the access token is valid, then the decoded user payload is returned.
+func (p PicketClient) Validate(args ValidateArgs) (AuthorizedUser, error) {
+	resp, err := p.DoRequest("POST", "/auth/validate", args)
+	var body AuthorizedUser
 
 	if err != nil {
 		return body, err

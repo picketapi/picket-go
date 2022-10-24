@@ -24,17 +24,17 @@ type NonceResponse struct {
 }
 
 type AuthorizationRequirements struct {
-	ContractAddress string `json:"contract_address"`
-	MinTokenBalance string `json:"min_token_balance"`
+	ContractAddress string `json:"contractAddress"`
+	MinTokenBalance string `json:"minTokenBalance"`
 	Collection      string `json:"collection"`
-	CreatorAddress  string `json:"creator_address"`
+	CreatorAddress  string `json:"creatorAddress"`
 	// TODO: Do we need to support the following?
 	TokenIds []string `json:"token_ids"`
 }
 
 type AuthArgs struct {
 	Chain         string                    `json:"chain"`
-	WalletAddress string                    `json:"wallet_address"`
+	WalletAddress string                    `json:"walletAddress"`
 	Signature     string                    `json:"signature"`
 	Requirements  AuthorizationRequirements `json:"requirements"`
 }
@@ -43,23 +43,28 @@ type TokenBalancse map[string]string
 
 type AuthorizedUser struct {
 	Chain          string `json:"chain"`
-	WalletAddress  string `json:"wallet_address"`
-	DisplayAddress string `json:"display_address"`
+	WalletAddress  string `json:"walletAddress"`
+	DisplayAddress string `json:"displayAddress"`
 }
 
 type AuthResponse struct {
 	User        AuthorizedUser `json:"user"`
-	AccessToken string         `json:"access_token"`
+	AccessToken string         `json:"accessToken"`
 }
 
 type AuthzArgs struct {
-	AccessToken  string                    `json:"access_token"`
+	AccessToken  string                    `json:"accessToken"`
+	Requirements AuthorizationRequirements `json:"requirements"`
+}
+
+type ValidateArgs struct {
+	AccessToken  string                    `json:"accessToken"`
 	Requirements AuthorizationRequirements `json:"requirements"`
 }
 
 type TokenOwnershipArgs struct {
 	Chain         string                    `json:"chain"`
-	WalletAddress string                    `json:"wallet_address"`
+	WalletAddress string                    `json:"walletAddress"`
 	Requirements  AuthorizationRequirements `json:"requirements"`
 }
 
@@ -77,6 +82,9 @@ type Picket interface {
 	// Authz authorizes an authenticated user's access token for the given requirements.
 	// On success, it returns an updated access token
 	Authz(args AuthzArgs) (AuthResponse, error)
+	// Validate validates an access token, optionally, for the given requirements.
+	// If the access token is valid, then the decoded user payload is returned.
+	Validate(args ValidateArgs) (AuthorizedUser, error)
 	// TokenOwnership checks if the wallet address has a given token balance.
 	// Similar to Authz, but does not require nor return an access token
 	TokenOwnership(args TokenOwnershipArgs) (TokenOwnershipResponse, error)

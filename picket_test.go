@@ -10,6 +10,8 @@ import (
 	picket "github.com/picketapi/picket-go"
 )
 
+const apiKey = "YOUR_API_KEY"
+
 func TestPicketDoRequest(t *testing.T) {
 	method := "GET"
 	path := "/test"
@@ -17,7 +19,6 @@ func TestPicketDoRequest(t *testing.T) {
 		Chain:         "ethereum",
 		WalletAddress: "0x1234567890",
 	}
-	apiKey := "YOUR_API_KEY"
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Check the request method and path
@@ -53,11 +54,9 @@ func TestPicketDoRequest(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	client := picket.NewClient(picket.PicketClientArgs{
-		APIKey:     apiKey,
-		BaseURL:    ts.URL,
-		HTTPClient: ts.Client(),
-	})
+	client := picket.NewClient(apiKey)
+	client.SetBaseURL(ts.URL)
+	client.SetHTTPClient(ts.Client())
 
 	_, err := client.DoRequest(method, path, body)
 
@@ -79,11 +78,9 @@ func TestPicketNonce(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	client := picket.NewClient(picket.PicketClientArgs{
-		APIKey:     "YOUR_API_KEY",
-		BaseURL:    ts.URL,
-		HTTPClient: ts.Client(),
-	})
+	client := picket.NewClient(apiKey)
+	client.SetBaseURL(ts.URL)
+	client.SetHTTPClient(ts.Client())
 
 	args := picket.NonceArgs{
 		Chain:         "ethereum",
@@ -122,11 +119,9 @@ func TestPicketAuth(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	client := picket.NewClient(picket.PicketClientArgs{
-		APIKey:     "YOUR_API_KEY",
-		BaseURL:    ts.URL,
-		HTTPClient: ts.Client(),
-	})
+	client := picket.NewClient(apiKey)
+	client.SetBaseURL(ts.URL)
+	client.SetHTTPClient(ts.Client())
 
 	args := picket.AuthArgs{
 		Chain:         "ethereum",
@@ -147,6 +142,43 @@ func TestPicketAuth(t *testing.T) {
 	}
 }
 
+func TestPicketValidate(t *testing.T) {
+	want := picket.AuthorizedUser{
+		Chain:          "ethereum",
+		WalletAddress:  "0x1234567890",
+		DisplayAddress: "my.name.eth",
+	}
+
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(want)
+	}))
+	defer ts.Close()
+
+	client := picket.NewClient(apiKey)
+	client.SetBaseURL(ts.URL)
+	client.SetHTTPClient(ts.Client())
+
+	args := picket.ValidateArgs{
+		AccessToken: "xxx.yyy.zzz",
+	}
+	got, err := client.Validate(args)
+
+	if err != nil {
+		t.Fatalf("Error: %s", err)
+	}
+
+	if got.Chain != want.Chain {
+		t.Errorf("got %s, want %s", got.Chain, want.Chain)
+	}
+	if got.WalletAddress != want.WalletAddress {
+		t.Errorf("got %s, want %s", got.WalletAddress, want.WalletAddress)
+	}
+	if got.DisplayAddress != want.DisplayAddress {
+		t.Errorf("got %s, want %s", got.DisplayAddress, want.DisplayAddress)
+	}
+}
+
 func TestPicketAuthorize(t *testing.T) {
 	want := picket.AuthResponse{
 		User: picket.AuthorizedUser{
@@ -163,11 +195,9 @@ func TestPicketAuthorize(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	client := picket.NewClient(picket.PicketClientArgs{
-		APIKey:     "YOUR_API_KEY",
-		BaseURL:    ts.URL,
-		HTTPClient: ts.Client(),
-	})
+	client := picket.NewClient(apiKey)
+	client.SetBaseURL(ts.URL)
+	client.SetHTTPClient(ts.Client())
 
 	args := picket.AuthzArgs{
 		AccessToken: "aaa.bbb.ccc",
@@ -201,11 +231,9 @@ func TestPicketTokenOwnership(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	client := picket.NewClient(picket.PicketClientArgs{
-		APIKey:     "YOUR_API_KEY",
-		BaseURL:    ts.URL,
-		HTTPClient: ts.Client(),
-	})
+	client := picket.NewClient(apiKey)
+	client.SetBaseURL(ts.URL)
+	client.SetHTTPClient(ts.Client())
 
 	args := picket.TokenOwnershipArgs{
 		Chain:         "solana",
@@ -245,11 +273,9 @@ func TestPicketErrorResponse(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	client := picket.NewClient(picket.PicketClientArgs{
-		APIKey:     "YOUR_API_KEY",
-		BaseURL:    ts.URL,
-		HTTPClient: ts.Client(),
-	})
+	client := picket.NewClient(apiKey)
+	client.SetBaseURL(ts.URL)
+	client.SetHTTPClient(ts.Client())
 
 	args := picket.NonceArgs{
 		Chain:         "ethereum",

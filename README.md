@@ -1,6 +1,6 @@
 # picket-go
 
-The official Picket API Go SDK
+The official Picket API Go library
 
 ## Installation
 

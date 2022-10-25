@@ -1,14 +1,14 @@
-package picket_test
+package picketapi_test
 
 import (
 	"testing"
 
-	picket "github.com/picketapi/picket-go"
+	picketapi "github.com/picketapi/picket-go"
 )
 
 func TestErrorRepsonseError(t *testing.T) {
 	want := "test error"
-	err := picket.ErrorResponse{
+	err := picketapi.ErrorResponse{
 		Code: "code",
 		Msg:  want,
 	}

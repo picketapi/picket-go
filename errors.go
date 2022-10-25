@@ -1,8 +1,8 @@
-// Package picket is a Go client for the Picket API
+// Package picketapi is a Go client for the Picket API
 //
 // The package is a simple wrapper around the Picket API for
 // Go applications
-package picket
+package picketapi
 
 type ErrorResponse struct {
 	Msg  string `json:"msg"`

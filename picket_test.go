@@ -1,4 +1,4 @@
-package picket_test
+package picketapi_test
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	picket "github.com/picketapi/picket-go"
+	picketapi "github.com/picketapi/picket-go"
 )
 
 const apiKey = "YOUR_API_KEY"
@@ -15,7 +15,7 @@ const apiKey = "YOUR_API_KEY"
 func TestPicketDoRequest(t *testing.T) {
 	method := "GET"
 	path := "/test"
-	body := picket.NonceArgs{
+	body := picketapi.NonceArgs{
 		Chain:         "ethereum",
 		WalletAddress: "0x1234567890",
 	}
@@ -39,7 +39,7 @@ func TestPicketDoRequest(t *testing.T) {
 			t.Errorf("Expected application/json, got %s", contentType)
 		}
 
-		reqBody := picket.NonceArgs{}
+		reqBody := picketapi.NonceArgs{}
 		json.NewDecoder(r.Body).Decode(&reqBody)
 
 		if reqBody.Chain != body.Chain {
@@ -54,11 +54,11 @@ func TestPicketDoRequest(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	client := picket.NewClient(apiKey)
-	client.SetBaseURL(ts.URL)
-	client.SetHTTPClient(ts.Client())
+	picket := picketapi.NewClient(apiKey)
+	picket.SetBaseURL(ts.URL)
+	picket.SetHTTPClient(ts.Client())
 
-	_, err := client.DoRequest(method, path, body)
+	_, err := picket.DoRequest(method, path, body)
 
 	if err != nil {
 		t.Fatalf("unexpected error: %s", err)
@@ -66,7 +66,7 @@ func TestPicketDoRequest(t *testing.T) {
 }
 
 func TestPicketNonce(t *testing.T) {
-	want := picket.NonceResponse{
+	want := picketapi.NonceResponse{
 		Nonce:     "abcdefghijklmnop",
 		Statement: "Woo",
 		Format:    "siwe",
@@ -78,15 +78,15 @@ func TestPicketNonce(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	client := picket.NewClient(apiKey)
-	client.SetBaseURL(ts.URL)
-	client.SetHTTPClient(ts.Client())
+	picket := picketapi.NewClient(apiKey)
+	picket.SetBaseURL(ts.URL)
+	picket.SetHTTPClient(ts.Client())
 
-	args := picket.NonceArgs{
+	args := picketapi.NonceArgs{
 		Chain:         "ethereum",
 		WalletAddress: "0x1234567890",
 	}
-	got, err := client.Nonce(args)
+	got, err := picket.Nonce(args)
 
 	if err != nil {
 		t.Fatalf("Error: %s", err)
@@ -104,8 +104,8 @@ func TestPicketNonce(t *testing.T) {
 }
 
 func TestPicketAuth(t *testing.T) {
-	want := picket.AuthResponse{
-		User: picket.AuthorizedUser{
+	want := picketapi.AuthResponse{
+		User: picketapi.AuthorizedUser{
 			Chain:          "ethereum",
 			WalletAddress:  "0x1234567890",
 			DisplayAddress: "my.name.eth",
@@ -119,16 +119,16 @@ func TestPicketAuth(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	client := picket.NewClient(apiKey)
-	client.SetBaseURL(ts.URL)
-	client.SetHTTPClient(ts.Client())
+	picket := picketapi.NewClient(apiKey)
+	picket.SetBaseURL(ts.URL)
+	picket.SetHTTPClient(ts.Client())
 
-	args := picket.AuthArgs{
+	args := picketapi.AuthArgs{
 		Chain:         "ethereum",
 		WalletAddress: "0x1234567890",
 		Signature:     "abcdefghijklmnop",
 	}
-	got, err := client.Auth(args)
+	got, err := picket.Auth(args)
 
 	if err != nil {
 		t.Fatalf("Error: %s", err)
@@ -143,7 +143,7 @@ func TestPicketAuth(t *testing.T) {
 }
 
 func TestPicketValidate(t *testing.T) {
-	want := picket.AuthorizedUser{
+	want := picketapi.AuthorizedUser{
 		Chain:          "ethereum",
 		WalletAddress:  "0x1234567890",
 		DisplayAddress: "my.name.eth",
@@ -155,14 +155,14 @@ func TestPicketValidate(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	client := picket.NewClient(apiKey)
-	client.SetBaseURL(ts.URL)
-	client.SetHTTPClient(ts.Client())
+	picket := picketapi.NewClient(apiKey)
+	picket.SetBaseURL(ts.URL)
+	picket.SetHTTPClient(ts.Client())
 
-	args := picket.ValidateArgs{
+	args := picketapi.ValidateArgs{
 		AccessToken: "xxx.yyy.zzz",
 	}
-	got, err := client.Validate(args)
+	got, err := picket.Validate(args)
 
 	if err != nil {
 		t.Fatalf("Error: %s", err)
@@ -180,8 +180,8 @@ func TestPicketValidate(t *testing.T) {
 }
 
 func TestPicketAuthorize(t *testing.T) {
-	want := picket.AuthResponse{
-		User: picket.AuthorizedUser{
+	want := picketapi.AuthResponse{
+		User: picketapi.AuthorizedUser{
 			Chain:          "ethereum",
 			WalletAddress:  "0x1234567890",
 			DisplayAddress: "my.name.eth",
@@ -195,18 +195,18 @@ func TestPicketAuthorize(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	client := picket.NewClient(apiKey)
-	client.SetBaseURL(ts.URL)
-	client.SetHTTPClient(ts.Client())
+	picket := picketapi.NewClient(apiKey)
+	picket.SetBaseURL(ts.URL)
+	picket.SetHTTPClient(ts.Client())
 
-	args := picket.AuthzArgs{
+	args := picketapi.AuthzArgs{
 		AccessToken: "aaa.bbb.ccc",
-		Requirements: picket.AuthorizationRequirements{
+		Requirements: picketapi.AuthorizationRequirements{
 			ContractAddress: "0xContract",
 			MinTokenBalance: "100",
 		},
 	}
-	got, err := client.Authz(args)
+	got, err := picket.Authz(args)
 
 	if err != nil {
 		t.Fatalf("Error: %s", err)
@@ -218,7 +218,7 @@ func TestPicketAuthorize(t *testing.T) {
 }
 
 func TestPicketTokenOwnership(t *testing.T) {
-	want := picket.TokenOwnershipResponse{
+	want := picketapi.TokenOwnershipResponse{
 		Allowed: true,
 		TokenBalances: map[string]string{
 			"0x1234567890": "100",
@@ -231,19 +231,19 @@ func TestPicketTokenOwnership(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	client := picket.NewClient(apiKey)
-	client.SetBaseURL(ts.URL)
-	client.SetHTTPClient(ts.Client())
+	picket := picketapi.NewClient(apiKey)
+	picket.SetBaseURL(ts.URL)
+	picket.SetHTTPClient(ts.Client())
 
-	args := picket.TokenOwnershipArgs{
+	args := picketapi.TokenOwnershipArgs{
 		Chain:         "solana",
 		WalletAddress: "0x1234567890",
-		Requirements: picket.AuthorizationRequirements{
+		Requirements: picketapi.AuthorizationRequirements{
 			ContractAddress: "0xContract",
 			MinTokenBalance: "100",
 		},
 	}
-	got, err := client.TokenOwnership(args)
+	got, err := picket.TokenOwnership(args)
 
 	if err != nil {
 		t.Fatalf("Error: %s", err)
@@ -261,7 +261,7 @@ func TestPicketTokenOwnership(t *testing.T) {
 }
 
 func TestPicketErrorResponse(t *testing.T) {
-	want := picket.ErrorResponse{
+	want := picketapi.ErrorResponse{
 		Msg:  "Oh no! An error",
 		Code: "testing_error",
 	}
@@ -273,15 +273,15 @@ func TestPicketErrorResponse(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	client := picket.NewClient(apiKey)
-	client.SetBaseURL(ts.URL)
-	client.SetHTTPClient(ts.Client())
+	picket := picketapi.NewClient(apiKey)
+	picket.SetBaseURL(ts.URL)
+	picket.SetHTTPClient(ts.Client())
 
-	args := picket.NonceArgs{
+	args := picketapi.NonceArgs{
 		Chain:         "ethereum",
 		WalletAddress: "0x1234567890",
 	}
-	resp, err := client.Nonce(args)
+	resp, err := picket.Nonce(args)
 
 	if err == nil {
 		t.Error("Expected error, got nil")
@@ -296,7 +296,7 @@ func TestPicketErrorResponse(t *testing.T) {
 		t.Errorf("Expected empty response, got format: %s", resp.Format)
 	}
 
-	var got picket.ErrorResponse
+	var got picketapi.ErrorResponse
 	if !errors.As(err, &got) {
 		t.Errorf("Expected ErrorRespose, got: %v", err)
 	}

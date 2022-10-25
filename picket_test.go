@@ -220,7 +220,7 @@ func TestPicketAuthorize(t *testing.T) {
 func TestPicketTokenOwnership(t *testing.T) {
 	want := picket.TokenOwnershipResponse{
 		Allowed: true,
-		Balances: map[string]string{
+		TokenBalances: map[string]string{
 			"0x1234567890": "100",
 		},
 	}
@@ -253,8 +253,8 @@ func TestPicketTokenOwnership(t *testing.T) {
 		t.Errorf("got %t, want %t", got.Allowed, want.Allowed)
 	}
 
-	for k, v := range got.Balances {
-		if v != want.Balances[k] {
+	for k, v := range got.TokenBalances {
+		if v != want.TokenBalances[k] {
 			t.Errorf("got %s, want %s", v, want.Balances[k])
 		}
 	}

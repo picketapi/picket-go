@@ -39,7 +39,7 @@ type AuthArgs struct {
 	Requirements  AuthorizationRequirements `json:"requirements"`
 }
 
-type TokenBalancse map[string]string
+type TokenBalances map[string]string
 
 type AuthorizedUser struct {
 	Chain          string `json:"chain"`
@@ -69,8 +69,8 @@ type TokenOwnershipArgs struct {
 }
 
 type TokenOwnershipResponse struct {
-	Allowed  bool          `json:"allowed"`
-	Balances TokenBalancse `json:"balances"`
+	Allowed       bool          `json:"allowed"`
+	TokenBalancse TokenBalances `json:"tokenBalances"`
 }
 
 type Picket interface {

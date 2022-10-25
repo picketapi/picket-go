@@ -10,7 +10,7 @@ go get -u github.com/picketapi/picket-go
 
 ## Usage - Quick Start
 
-Use the `picket.NewClient` to create the Picket API client. It takes a _secret API key_ as a parameter.
+Use the `picketapi.NewClient` to create the Picket API client. It takes a _secret API key_ as a parameter.
 
 ```go
 import (

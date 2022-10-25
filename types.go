@@ -55,6 +55,7 @@ type AuthResponse struct {
 type AuthzArgs struct {
 	AccessToken  string                    `json:"accessToken"`
 	Requirements AuthorizationRequirements `json:"requirements"`
+	Revalidate   bool                      `json:"revalidate"`
 }
 
 type ValidateArgs struct {

@@ -70,7 +70,7 @@ type TokenOwnershipArgs struct {
 
 type TokenOwnershipResponse struct {
 	Allowed       bool          `json:"allowed"`
-	TokenBalancse TokenBalances `json:"tokenBalances"`
+	TokenBalances TokenBalances `json:"tokenBalances"`
 }
 
 type Picket interface {

@@ -255,7 +255,7 @@ func TestPicketTokenOwnership(t *testing.T) {
 
 	for k, v := range got.TokenBalances {
 		if v != want.TokenBalances[k] {
-			t.Errorf("got %s, want %s", v, want.Balances[k])
+			t.Errorf("got %s, want %s", v, want.TokenBalances[k])
 		}
 	}
 }

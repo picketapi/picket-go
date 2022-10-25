@@ -7,7 +7,7 @@ package picket
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"path"
@@ -78,7 +78,7 @@ func (p PicketClient) DoRequest(method, apiPath string, body interface{}) (*http
 		if err != nil {
 			return nil, err
 		}
-		req.Body = ioutil.NopCloser(bytes.NewReader(bodyBytes))
+		req.Body = io.NopCloser(bytes.NewReader(bodyBytes))
 	}
 
 	return p.httpClient.Do(req)

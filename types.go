@@ -24,12 +24,30 @@ type NonceResponse struct {
 }
 
 type AuthorizationRequirements struct {
-	ContractAddress string `json:"contractAddress"`
-	MinTokenBalance string `json:"minTokenBalance"`
-	Collection      string `json:"collection"`
-	CreatorAddress  string `json:"creatorAddress"`
-	// TODO: Do we need to support the following?
-	TokenIds []string `json:"token_ids"`
+	ContractAddress string   `json:"contractAddress"`
+	MinTokenBalance string   `json:"minTokenBalance"`
+	AllowedWallets  []string `json:"allowedWallets"`
+	// Solana specific requirements
+	Collection     string   `json:"collection"`
+	CreatorAddress string   `json:"creatorAddress"`
+	TokenIds       []string `json:"token_ids"`
+}
+
+type ChainType = string
+
+const (
+	ChainTypeEthereum ChainType = "ethereum"
+	ChainTypeSolana   ChainType = "solana"
+	ChainTypeFlow     ChainType = "flow"
+)
+
+type SigningMessageContext struct {
+	Domain    string    `json:"domain"`
+	URI       string    `json:"uri"`
+	ChainID   string    `json:"chainId"`
+	IssuedAt  string    `json:"issuedAt"`
+	ChainType ChainType `json:"chainType"`
+	Locale    string    `json:"locale"`
 }
 
 type AuthArgs struct {
@@ -37,14 +55,16 @@ type AuthArgs struct {
 	WalletAddress string                    `json:"walletAddress"`
 	Signature     string                    `json:"signature"`
 	Requirements  AuthorizationRequirements `json:"requirements"`
+	Context       SigningMessageContext     `json:"context"`
 }
 
 type TokenBalances map[string]string
 
 type AuthorizedUser struct {
-	Chain          string `json:"chain"`
-	WalletAddress  string `json:"walletAddress"`
-	DisplayAddress string `json:"displayAddress"`
+	Chain          string        `json:"chain"`
+	WalletAddress  string        `json:"walletAddress"`
+	DisplayAddress string        `json:"displayAddress"`
+	TokenBalances  TokenBalances `json:"tokenBalances"`
 }
 
 type AuthResponse struct {

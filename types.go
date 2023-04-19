@@ -51,11 +51,11 @@ type SigningMessageContext struct {
 }
 
 type AuthArgs struct {
-	Chain         string                    `json:"chain"`
+	Chain         string                    `json:"chain,omitempty"`
 	WalletAddress string                    `json:"walletAddress"`
 	Signature     string                    `json:"signature"`
-	Requirements  AuthorizationRequirements `json:"requirements"`
-	Context       SigningMessageContext     `json:"context"`
+	Requirements  AuthorizationRequirements `json:"requirements,omitempty"`
+	Context       SigningMessageContext     `json:"context,omitempty"`
 }
 
 type TokenBalances map[string]string
@@ -74,19 +74,19 @@ type AuthResponse struct {
 
 type AuthzArgs struct {
 	AccessToken  string                    `json:"accessToken"`
-	Requirements AuthorizationRequirements `json:"requirements"`
+	Requirements AuthorizationRequirements `json:"requirements,omitempty"`
 	Revalidate   bool                      `json:"revalidate"`
 }
 
 type ValidateArgs struct {
 	AccessToken  string                    `json:"accessToken"`
-	Requirements AuthorizationRequirements `json:"requirements"`
+	Requirements AuthorizationRequirements `json:"requirements,omitempty"`
 }
 
 type TokenOwnershipArgs struct {
 	Chain         string                    `json:"chain"`
 	WalletAddress string                    `json:"walletAddress"`
-	Requirements  AuthorizationRequirements `json:"requirements"`
+	Requirements  AuthorizationRequirements `json:"requirements,omitempty"`
 }
 
 type TokenOwnershipResponse struct {

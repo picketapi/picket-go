@@ -24,13 +24,13 @@ type NonceResponse struct {
 }
 
 type AuthorizationRequirements struct {
-	ContractAddress string   `json:"contractAddress"`
-	MinTokenBalance string   `json:"minTokenBalance"`
-	AllowedWallets  []string `json:"allowedWallets"`
+	ContractAddress string   `json:"contractAddress,omitempty"`
+	MinTokenBalance string   `json:"minTokenBalance,omitempty"`
+	AllowedWallets  []string `json:"allowedWallets,omitempty"`
 	// Solana specific requirements
-	Collection     string   `json:"collection"`
-	CreatorAddress string   `json:"creatorAddress"`
-	TokenIds       []string `json:"token_ids"`
+	Collection     string   `json:"collection,omitempty"`
+	CreatorAddress string   `json:"creatorAddress,omitempty"`
+	TokenIds       []string `json:"token_ids,omitempty"`
 }
 
 type ChainType = string

@@ -148,9 +148,18 @@ func TestPicketValidate(t *testing.T) {
 		WalletAddress:  "0x1234567890",
 		DisplayAddress: "my.name.eth",
 	}
+	args := picketapi.ValidateArgs{
+		AccessToken: "xxx.yyy.zzz",
+	}
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
+		// check body
+		reqBody := picketapi.ValidateArgs{}
+		json.NewDecoder(r.Body).Decode(&reqBody)
+		if reqBody.AccessToken != args.AccessToken {
+			t.Errorf("want %s, got %s", args.AccessToken, reqBody.AccessToken)
+		}
 		json.NewEncoder(w).Encode(want)
 	}))
 	defer ts.Close()
@@ -159,9 +168,6 @@ func TestPicketValidate(t *testing.T) {
 	picket.SetBaseURL(ts.URL)
 	picket.SetHTTPClient(ts.Client())
 
-	args := picketapi.ValidateArgs{
-		AccessToken: "xxx.yyy.zzz",
-	}
 	got, err := picket.Validate(args)
 
 	if err != nil {

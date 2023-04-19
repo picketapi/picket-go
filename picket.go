@@ -64,22 +64,23 @@ func (p PicketClient) DoRequest(method, apiPath string, body interface{}) (*http
 		return nil, err
 	}
 
-	req, err := http.NewRequest(method, reqURL, nil)
+	// set body if provided
+	var reqBody io.Reader
+	if body != nil {
+		bodyBytes, err := json.Marshal(body)
+		if err != nil {
+			return nil, err
+		}
+		reqBody = bytes.NewReader(bodyBytes)
+	}
+
+	req, err := http.NewRequest(method, reqURL, reqBody)
 	if err != nil {
 		return nil, err
 	}
 
 	req.Header = p.HTTPHeaders()
 	req.SetBasicAuth(p.apiKey, "")
-
-	// set body if provided
-	if body != nil {
-		bodyBytes, err := json.Marshal(body)
-		if err != nil {
-			return nil, err
-		}
-		req.Body = io.NopCloser(bytes.NewReader(bodyBytes))
-	}
 
 	return p.httpClient.Do(req)
 }
